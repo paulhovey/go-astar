@@ -9,13 +9,18 @@ import "container/heap"
 type Pather interface {
 	// PathNeighbors returns the direct neighboring nodes of this node which
 	// can be pathed to.
-	PathNeighbors() []Pather
+	PathNeighbors(g Graph) []Pather
 	// PathNeighborCost calculates the exact movement cost to neighbor nodes.
 	PathNeighborCost(to Pather) float64
 	// PathEstimatedCost is a heuristic method for estimating movement costs
 	// between non-adjacent nodes.
 	PathEstimatedCost(to Pather) float64
 }
+
+// Graph is used for storing the different nodes in a graph
+// examples are Goreland empty struct and World struct
+// only used in Pather.PathNeighbors()
+type Graph interface{}
 
 // node is a wrapper to store A* data for a Pather node.
 type node struct {
@@ -46,9 +51,9 @@ func (nm nodeMap) get(p Pather) *node {
 // Path calculates a short path and the distance between the two Pather nodes.
 //
 // If no path is found, found will be false.
-func Path(from, to Pather) (path []Pather, distance float64, found bool) {
+func Path(from, to Pather, world Graph) (path []Pather, distance float64, found bool) {
 	nm := nodeMap{}
-	nq := &priorityQueue{}
+	nq := new(priorityQueue)
 	heap.Init(nq)
 	fromNode := nm.get(from)
 	fromNode.open = true
@@ -63,6 +68,7 @@ func Path(from, to Pather) (path []Pather, distance float64, found bool) {
 		current.closed = true
 
 		if current == nm.get(to) {
+			// fmt.Println("current == nm.get(to)")
 			// Found a path to the goal.
 			p := []Pather{}
 			curr := current
@@ -73,7 +79,7 @@ func Path(from, to Pather) (path []Pather, distance float64, found bool) {
 			return p, current.cost, true
 		}
 
-		for _, neighbor := range current.pather.PathNeighbors() {
+		for _, neighbor := range current.pather.PathNeighbors(world) {
 			cost := current.cost + current.pather.PathNeighborCost(neighbor)
 			neighborNode := nm.get(neighbor)
 			if cost < neighborNode.cost {

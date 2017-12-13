@@ -64,13 +64,11 @@ type Tile struct {
 	Kind int
 	// X and Y are the coordinates of the tile.
 	X, Y int
-	// W is a reference to the World that the tile is a part of.
-	W World
 }
 
 // PathNeighbors returns the neighbors of the tile, excluding blockers and
 // tiles off the edge of the board.
-func (t *Tile) PathNeighbors() []Pather {
+func (t *Tile) PathNeighbors(g Graph) []Pather {
 	neighbors := []Pather{}
 	for _, offset := range [][]int{
 		{-1, 0},
@@ -78,7 +76,7 @@ func (t *Tile) PathNeighbors() []Pather {
 		{0, -1},
 		{0, 1},
 	} {
-		if n := t.W.Tile(t.X+offset[0], t.Y+offset[1]); n != nil &&
+		if n := g.(World).Tile(t.X+offset[0], t.Y+offset[1]); n != nil &&
 			n.Kind != KindBlocker {
 			neighbors = append(neighbors, n)
 		}
@@ -126,7 +124,6 @@ func (w World) SetTile(t *Tile, x, y int) {
 	w[x][y] = t
 	t.X = x
 	t.Y = y
-	t.W = w
 }
 
 // FirstOfKind gets the first tile on the board of a kind, used to get the from
