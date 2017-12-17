@@ -9,7 +9,7 @@ import "container/heap"
 type Pather interface {
 	// PathNeighbors returns the direct neighboring nodes of this node which
 	// can be pathed to.
-	PathNeighbors(g Graph) []Pather
+	PathNeighbors(g Graph, u Userdata) []Pather
 	// PathNeighborCost calculates the exact movement cost to neighbor nodes.
 	PathNeighborCost(to Pather) float64
 	// PathEstimatedCost is a heuristic method for estimating movement costs
@@ -21,6 +21,10 @@ type Pather interface {
 // examples are Goreland empty struct and World struct
 // only used in Pather.PathNeighbors()
 type Graph interface{}
+
+// Userdata is used to pass in other state information that may be helpful to solving astar accurately
+// both Graph and Userdata can be nil for implementations that don't need them
+type Userdata interface{}
 
 // node is a wrapper to store A* data for a Pather node.
 type node struct {
@@ -51,7 +55,7 @@ func (nm nodeMap) get(p Pather) *node {
 // Path calculates a short path and the distance between the two Pather nodes.
 //
 // If no path is found, found will be false.
-func Path(from, to Pather, world Graph) (path []Pather, distance float64, found bool) {
+func Path(from, to Pather, world Graph, data Userdata) (path []Pather, distance float64, found bool) {
 	nm := nodeMap{}
 	nq := new(priorityQueue)
 	heap.Init(nq)
@@ -79,7 +83,7 @@ func Path(from, to Pather, world Graph) (path []Pather, distance float64, found 
 			return p, current.cost, true
 		}
 
-		for _, neighbor := range current.pather.PathNeighbors(world) {
+		for _, neighbor := range current.pather.PathNeighbors(world, data) {
 			cost := current.cost + current.pather.PathNeighborCost(neighbor)
 			neighborNode := nm.get(neighbor)
 			if cost < neighborNode.cost {

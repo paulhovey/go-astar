@@ -106,7 +106,7 @@ The `PathEstimatedCost` is a heuristic method for estimating the distance betwee
 ```go
 type Tile struct{}
 
-func (t *Tile) PathNeighbors() []astar.Pather {
+func (t *Tile) PathNeighbors(g astar.Graph, ud astar.Userdata) []astar.Pather {
 	return []astar.Pather{
 		t.Up(),
 		t.Right(),

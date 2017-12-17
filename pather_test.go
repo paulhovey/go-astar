@@ -68,7 +68,7 @@ type Tile struct {
 
 // PathNeighbors returns the neighbors of the tile, excluding blockers and
 // tiles off the edge of the board.
-func (t *Tile) PathNeighbors(g Graph) []Pather {
+func (t *Tile) PathNeighbors(g Graph, ud Userdata) []Pather {
 	neighbors := []Pather{}
 	for _, offset := range [][]int{
 		{-1, 0},

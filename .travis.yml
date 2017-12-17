@@ -1,1 +1,15 @@
 language: go
+
+go:
+  - 1.9
+
+# Don't email me the results of the test runs.
+notifications:
+  email: false
+
+# run tests
+script:
+  - if [ -n "$(go fmt ./...)" ]; then echo 'Code is not formatted with "go fmt"'; false; fi # fail if a .go file hasn't been formatted with gofmt
+  - go vet ./... # go vet is the official Go static analyzer
+  - go test -v ./... # run all the tests
+  - go build ./... # make sure code builds

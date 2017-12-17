@@ -61,7 +61,7 @@ func createGorelandGraphPath_Diagonal(t *testing.T, diagonal_cost float64, expec
 
 	t.Logf("Goreland.  Diagonal cost: %v\n\n", diagonal_cost)
 
-	p, dist, found := Path(tr_start, tr_end, world)
+	p, dist, found := Path(tr_start, tr_end, world, nil)
 
 	if !found {
 		t.Log("Could not find a path")

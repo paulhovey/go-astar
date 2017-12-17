@@ -44,7 +44,7 @@ type Truck struct {
 }
 
 // PathNeighbors returns the neighbors of the Truck
-func (t *Truck) PathNeighbors(w Graph) []Pather {
+func (t *Truck) PathNeighbors(w Graph, ud Userdata) []Pather {
 	// could cast w to Goreland if needed
 	neighbors := []Pather{}
 
