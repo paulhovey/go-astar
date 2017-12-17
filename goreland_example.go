@@ -83,6 +83,11 @@ func (t *Truck) PathEstimatedCost(to Pather) float64 {
 	return r
 }
 
+func (t *Truck) PathEquals(to Pather) bool {
+	toT := to.(*Truck)
+	return t == toT
+}
+
 // RenderPath renders a path on top of a Goreland world.
 func (w Goreland) RenderPath(path []Pather) string {
 

@@ -105,6 +105,11 @@ func (t *Tile) PathEstimatedCost(to Pather) float64 {
 	return float64(absX + absY)
 }
 
+func (t *Tile) PathEquals(to Pather) bool {
+	toT := to.(*Tile)
+	return t == toT
+}
+
 // World is a two dimensional map of Tiles.
 type World map[int]map[int]*Tile
 

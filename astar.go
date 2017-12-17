@@ -1,6 +1,7 @@
 package astar
 
 import "container/heap"
+import "fmt"
 
 // astar is an A* pathfinding implementation.
 
@@ -15,6 +16,9 @@ type Pather interface {
 	// PathEstimatedCost is a heuristic method for estimating movement costs
 	// between non-adjacent nodes.
 	PathEstimatedCost(to Pather) float64
+	// Returns whether the pather is equal to another pather
+	// used for determining the final point
+	PathEquals(to Pather) bool
 }
 
 // Graph is used for storing the different nodes in a graph
@@ -62,17 +66,18 @@ func Path(from, to Pather, world Graph, data Userdata) (path []Pather, distance 
 	fromNode := nm.get(from)
 	fromNode.open = true
 	heap.Push(nq, fromNode)
+	fmt.Println("from: ", from, " to: ", to)
 	for {
 		if nq.Len() == 0 {
-			// There's no path, return found false.
+			fmt.Println("There's no path, return found false")
 			return
 		}
 		current := heap.Pop(nq).(*node)
 		current.open = false
 		current.closed = true
 
-		if current == nm.get(to) {
-			// fmt.Println("current == nm.get(to)")
+		if current.pather.PathEquals(nm.get(to).pather) {
+			fmt.Println("current == nm.get(to)")
 			// Found a path to the goal.
 			p := []Pather{}
 			curr := current
