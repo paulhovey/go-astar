@@ -76,8 +76,7 @@ func Path(from, to Pather, world Graph, data Userdata) (path []Pather, distance 
 		current.open = false
 		current.closed = true
 
-		if current.pather.PathEquals(nm.get(to).pather) {
-			fmt.Println("current == nm.get(to)")
+		if current.pather.PathEquals(to) {
 			// Found a path to the goal.
 			p := []Pather{}
 			curr := current
