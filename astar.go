@@ -18,7 +18,7 @@ type Pather interface {
 	PathEstimatedCost(to Pather) float64
 	// Returns whether the pather is equal to another pather
 	// used for determining the final point
-	PathEquals(to Pather) bool
+	PathEquals(to Pather, g Graph, u Userdata) bool
 }
 
 // Graph is used for storing the different nodes in a graph
@@ -76,9 +76,8 @@ func Path(from, to Pather, world Graph, data Userdata) (path []Pather, distance 
 		current.open = false
 		current.closed = true
 
-		if current.pather.PathEquals(nm.get(to).pather) {
-			fmt.Println("current == nm.get(to)")
-			// Found a path to the goal.
+		if current.pather.PathEquals(to, world, data) {
+			fmt.Println("Found a path to the goal.")
 			p := []Pather{}
 			curr := current
 			for curr != nil {
@@ -86,25 +85,26 @@ func Path(from, to Pather, world Graph, data Userdata) (path []Pather, distance 
 				curr = curr.parent
 			}
 			return p, current.cost, true
+		} else {
+			for _, neighbor := range current.pather.PathNeighbors(world, data) {
+				cost := current.cost + current.pather.PathNeighborCost(neighbor)
+				neighborNode := nm.get(neighbor)
+				if cost < neighborNode.cost {
+					if neighborNode.open {
+						heap.Remove(nq, neighborNode.index)
+					}
+					neighborNode.open = false
+					neighborNode.closed = false
+				}
+				if !neighborNode.open && !neighborNode.closed {
+					neighborNode.cost = cost
+					neighborNode.open = true
+					neighborNode.rank = cost + neighbor.PathEstimatedCost(to)
+					neighborNode.parent = current
+					heap.Push(nq, neighborNode)
+				}
+			}
 		}
 
-		for _, neighbor := range current.pather.PathNeighbors(world, data) {
-			cost := current.cost + current.pather.PathNeighborCost(neighbor)
-			neighborNode := nm.get(neighbor)
-			if cost < neighborNode.cost {
-				if neighborNode.open {
-					heap.Remove(nq, neighborNode.index)
-				}
-				neighborNode.open = false
-				neighborNode.closed = false
-			}
-			if !neighborNode.open && !neighborNode.closed {
-				neighborNode.cost = cost
-				neighborNode.open = true
-				neighborNode.rank = cost + neighbor.PathEstimatedCost(to)
-				neighborNode.parent = current
-				heap.Push(nq, neighborNode)
-			}
-		}
 	}
 }
