@@ -105,7 +105,7 @@ func (t *Tile) PathEstimatedCost(to Pather) float64 {
 	return float64(absX + absY)
 }
 
-func (t *Tile) PathEquals(to Pather) bool {
+func (t *Tile) PathEquals(to Pather, g Graph, u Userdata) bool {
 	toT := to.(*Tile)
 	return t == toT
 }

@@ -83,7 +83,7 @@ func (t *Truck) PathEstimatedCost(to Pather) float64 {
 	return r
 }
 
-func (t *Truck) PathEquals(to Pather) bool {
+func (t *Truck) PathEquals(to Pather, g Graph, u Userdata) bool {
 	toT := to.(*Truck)
 	return t == toT
 }
