@@ -12,10 +12,10 @@ type Pather interface {
 	// can be pathed to.
 	PathNeighbors(g Graph, u Userdata) []Pather
 	// PathNeighborCost calculates the exact movement cost to neighbor nodes.
-	PathNeighborCost(to Pather) float64
+	PathNeighborCost(to Pather, g Graph, u Userdata) float64
 	// PathEstimatedCost is a heuristic method for estimating movement costs
 	// between non-adjacent nodes.
-	PathEstimatedCost(to Pather) float64
+	PathEstimatedCost(to Pather, g Graph, u Userdata) float64
 	// Returns whether the pather is equal to another pather
 	// used for determining the final point
 	PathEquals(to Pather, g Graph, u Userdata) bool
@@ -87,7 +87,7 @@ func Path(from, to Pather, world Graph, data Userdata) (path []Pather, distance 
 			return p, current.cost, true
 		} else {
 			for _, neighbor := range current.pather.PathNeighbors(world, data) {
-				cost := current.cost + current.pather.PathNeighborCost(neighbor)
+				cost := current.cost + current.pather.PathNeighborCost(neighbor, world, data)
 				neighborNode := nm.get(neighbor)
 				if cost < neighborNode.cost {
 					if neighborNode.open {
@@ -99,7 +99,7 @@ func Path(from, to Pather, world Graph, data Userdata) (path []Pather, distance 
 				if !neighborNode.open && !neighborNode.closed {
 					neighborNode.cost = cost
 					neighborNode.open = true
-					neighborNode.rank = cost + neighbor.PathEstimatedCost(to)
+					neighborNode.rank = cost + neighbor.PathEstimatedCost(to, world, data)
 					neighborNode.parent = current
 					heap.Push(nq, neighborNode)
 				}

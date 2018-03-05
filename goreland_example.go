@@ -55,7 +55,7 @@ func (t *Truck) PathNeighbors(w Graph, ud Userdata) []Pather {
 }
 
 // PathNeighborCost returns the cost of the tube leading to Truck.
-func (t *Truck) PathNeighborCost(to Pather) float64 {
+func (t *Truck) PathNeighborCost(to Pather, g Graph, u Userdata) float64 {
 
 	for _, tube_element := range (t).out_to {
 		if Pather((tube_element.to)) == to {
@@ -67,7 +67,7 @@ func (t *Truck) PathNeighborCost(to Pather) float64 {
 
 // PathEstimatedCost uses Manhattan distance to estimate orthogonal distance
 // between non-adjacent nodes.
-func (t *Truck) PathEstimatedCost(to Pather) float64 {
+func (t *Truck) PathEstimatedCost(to Pather, g Graph, u Userdata) float64 {
 
 	toT := to.(*Truck)
 	absX := toT.X - t.X

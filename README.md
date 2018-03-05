@@ -115,11 +115,11 @@ func (t *Tile) PathNeighbors(g astar.Graph, ud astar.Userdata) []astar.Pather {
 	}
 }
 
-func (t *Tile) PathNeighborCost(to astar.Pather) float64 {
+func (t *Tile) PathNeighborCost(to astar.Pather, g Graph, u Userdata) float64 {
 	return to.MovementCost
 }
 
-func (t *Tile) PathEstimatedCost(to astar.Pather) float64 {
+func (t *Tile) PathEstimatedCost(to astar.Pather, g Graph, u Userdata) float64 {
 	return t.ManhattanDistance(to)
 }
 ```

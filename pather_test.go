@@ -85,14 +85,14 @@ func (t *Tile) PathNeighbors(g Graph, ud Userdata) []Pather {
 }
 
 // PathNeighborCost returns the movement cost of the directly neighboring tile.
-func (t *Tile) PathNeighborCost(to Pather) float64 {
+func (t *Tile) PathNeighborCost(to Pather, g Graph, u Userdata) float64 {
 	toT := to.(*Tile)
 	return KindCosts[toT.Kind]
 }
 
 // PathEstimatedCost uses Manhattan distance to estimate orthogonal distance
 // between non-adjacent nodes.
-func (t *Tile) PathEstimatedCost(to Pather) float64 {
+func (t *Tile) PathEstimatedCost(to Pather, g Graph, u Userdata) float64 {
 	toT := to.(*Tile)
 	absX := toT.X - t.X
 	if absX < 0 {
